@@ -1,5 +1,6 @@
 """Build the final lab report using bundled python-docx, with actual evidence."""
 import json
+import ast
 from pathlib import Path
 import subprocess
 
@@ -103,6 +104,35 @@ def code(text):
     for run in para.runs:
         run.font.name = "Consolas"
         run.font.size = Pt(9)
+
+
+def source_excerpt(relative_path, start, end):
+    """Copy actual source lines with editor-style line numbers into Word."""
+    lines = (ROOT / relative_path).read_text(encoding="utf-8").splitlines()
+    p(f"{relative_path}   |   Lines {start} to {end}")
+    for number in range(start, end + 1):
+        para = p("")
+        para.paragraph_format.space_after = Pt(0)
+        para.paragraph_format.line_spacing = 1.05
+        number_run = para.add_run(f"{number:>3}  ")
+        number_run.font.name = "Consolas"
+        number_run.font.size = Pt(9)
+        number_run.font.color.rgb = RGBColor.from_string("666666")
+        run = para.add_run(lines[number - 1])
+        run.font.name = "Consolas"
+        run.font.size = Pt(9)
+        if lines[number - 1].lstrip().startswith("#"):
+            run.font.color.rgb = RGBColor.from_string("38761D")
+        elif lines[number - 1].lstrip().startswith(("def ", "if ", "return ", "with ")):
+            run.font.color.rgb = RGBColor.from_string("17365D")
+    p("")
+
+
+def function_excerpt(relative_path, function_name):
+    source = (ROOT / relative_path).read_text(encoding="utf-8")
+    node = next(node for node in ast.parse(source).body
+                if isinstance(node, ast.FunctionDef) and node.name == function_name)
+    source_excerpt(relative_path, node.lineno, node.end_lineno)
 
 
 def link(label, url):
@@ -312,6 +342,39 @@ p("Course handout: Experiment 1 Agile and Scrum Demo. Detailed Scrum records, Pr
 link("Scrum Guide", "https://scrumguides.org/scrum-guide.html")
 link("Iris dataset documentation", "https://scikit-learn.org/stable/modules/generated/sklearn.datasets.load_iris.html")
 link("GitHub Actions", "https://docs.github.com/en/actions")
+
+page("Code excerpts for VS Code")
+p("The following excerpts are copied directly from the submitted project files. Filenames and actual line numbers make each section easy to locate in VS Code. The line numbers are display labels and are not part of the Python code.")
+h("Dataset validation")
+function_excerpt("src/iris_demo.py", "validate_dataset")
+h("Reproducible training and evaluation")
+function_excerpt("src/iris_demo.py", "train_model")
+p("The split and classifier use seed 42. Evaluation uses only held-out examples, and the resulting metrics include accuracy, class labels, a confusion matrix and a dataset audit.")
+
+page("Prediction and saved model code")
+h("Validated prediction with leaf probability")
+function_excerpt("src/iris_demo.py", "prediction_details")
+p("Four finite positive measurements are required. The selected class and its leaf probability are returned together; the CLI explicitly states that this probability is not calibrated confidence.")
+h("Model persistence and dataset export")
+function_excerpt("src/iris_demo.py", "save_training_outputs")
+p("joblib saves the model bundle. JSON and CSV preserve evaluation results, and the Iris export makes the dataset inspectable. The automated round-trip test verifies the saved model's predictions.")
+
+page("Automated test code excerpts")
+h("Reproducibility and accuracy acceptance test")
+function_excerpt("tests/test_iris_demo.py", "test_training_is_reproducible_and_meets_acceptance")
+p("This test verifies the 95% threshold, the 120/30 split, the confusion-matrix total and agreement between repeated model predictions.")
+h("Saved model round trip test")
+function_excerpt("tests/test_iris_demo.py", "test_saved_model_and_reports_roundtrip")
+p("The model is saved in an isolated temporary directory, loaded again, and checked against its original predictions. The report and exported dataset are also verified.")
+code("python -m pytest -q --junitxml=reports/junit.xml\n19 passed")
+
+page("GitHub Actions workflow excerpts")
+h("Automated test job")
+source_excerpt(".github/workflows/ci.yml", 11, 32)
+p("Every push and pull request runs this job with Python 3.11. The JUnit test-results artifact is uploaded even when tests fail, provided the report exists.")
+h("Dependent delivery job")
+source_excerpt(".github/workflows/ci.yml", 34, 57)
+p("The needs field gates delivery on successful tests. The condition restricts delivery to main, where training and packaging produce the downloadable accepted increment.")
 
 footer = section.footer.paragraphs[0]
 footer.alignment = 2
