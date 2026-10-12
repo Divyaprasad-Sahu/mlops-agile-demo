@@ -1,0 +1,9 @@
+.venv/
+__pycache__/
+.pytest_cache/
+*.pyc
+models/*.joblib
+reports/
+dist/
+docs/evidence/git_commands.txt
+tools/__pycache__/
