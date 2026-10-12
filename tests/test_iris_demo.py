@@ -8,7 +8,7 @@ import numpy as np
 import pytest
 from sklearn.datasets import load_iris
 
-from src.iris_demo import (predict_species, save_training_outputs, train_model,
+from src.iris_demo import (predict_species, prediction_details, save_training_outputs, train_model,
                            validate_dataset)
 
 
@@ -58,6 +58,15 @@ def test_known_predictions(values, expected):
     assert predict_species(bundle, values) == expected
 
 
+def test_prediction_details_report_class_probability():
+    bundle, _ = train_model()
+    details = prediction_details(bundle, [5.1, 3.5, 1.4, 0.2])
+    assert details["species"] == "setosa"
+    assert 0 <= details["leaf_probability"] <= 1
+    probabilities = bundle["model"].predict_proba([[5.1, 3.5, 1.4, 0.2]])[0]
+    assert details["leaf_probability"] == float(max(probabilities))
+
+
 @pytest.mark.parametrize("values", [[1, 2], [1, 2, 3, 0],
                                    [1, 2, 3, float("inf")], [1, 2, 3, -1]])
 def test_prediction_rejects_invalid_measurements(values):
@@ -101,6 +110,7 @@ def test_cli_train_and_predict(tmp_path):
                                str(model_dir / "iris_model.joblib")], capture_output=True, text=True)
     assert predicted.returncode == 0, predicted.stderr
     assert "setosa" in predicted.stdout
+    assert "Leaf probability:" in predicted.stdout
 
 
 def test_cli_missing_model_has_helpful_error(tmp_path):

@@ -32,6 +32,11 @@ command rejects accuracy below 95% and writes:
 - `models/confusion_matrix.csv`: actual classes as rows, predicted classes as columns.
 - `data/iris.csv`: inspectable dataset export.
 
+Prediction also reports the selected class's **leaf probability**, the fraction
+of training samples of that class in the reached Decision Tree leaf. It is not
+calibrated confidence or a guarantee of correctness on new measurements. This
+feature is the code change used in the CI/CD pull-request demonstration.
+
 No missing values need imputation in this dataset. Duplicate rows are reported
 and retained to reproduce the assignment's original split. A small single
 hold-out evaluation demonstrates the lab; it is not a production performance claim.
