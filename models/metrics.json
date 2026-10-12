@@ -1,0 +1,70 @@
+{
+  "accuracy": 1.0,
+  "minimum_accuracy": 0.95,
+  "random_state": 42,
+  "train_rows": 120,
+  "test_rows": 30,
+  "feature_names": [
+    "sepal length (cm)",
+    "sepal width (cm)",
+    "petal length (cm)",
+    "petal width (cm)"
+  ],
+  "target_names": [
+    "setosa",
+    "versicolor",
+    "virginica"
+  ],
+  "confusion_matrix": [
+    [
+      10,
+      0,
+      0
+    ],
+    [
+      0,
+      9,
+      0
+    ],
+    [
+      0,
+      0,
+      11
+    ]
+  ],
+  "classification_report": {
+    "setosa": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1-score": 1.0,
+      "support": 10.0
+    },
+    "versicolor": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1-score": 1.0,
+      "support": 9.0
+    },
+    "virginica": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1-score": 1.0,
+      "support": 11.0
+    },
+    "accuracy": 1.0,
+    "macro avg": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1-score": 1.0,
+      "support": 30.0
+    },
+    "weighted avg": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1-score": 1.0,
+      "support": 30.0
+    }
+  },
+  "missing_values": 0,
+  "duplicate_rows": 1
+}
