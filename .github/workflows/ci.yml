@@ -1,0 +1,57 @@
+name: Iris CI and delivery
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: Validate and test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: pip
+      - name: Install pinned dependencies
+        run: python -m pip install -r requirements-dev.txt
+      - name: Run acceptance tests
+        run: python -m pytest -q --junitxml=reports/junit.xml
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results-${{ github.run_id }}-${{ github.run_attempt }}
+          path: reports/junit.xml
+          if-no-files-found: warn
+          retention-days: 90
+
+  deliver:
+    name: Train and deliver
+    needs: test
+    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: pip
+      - name: Install runtime dependencies
+        run: python -m pip install -r requirements.txt
+      - name: Train and evaluate
+        run: python -m src.iris_demo train
+      - name: Package tested increment
+        run: python tools/package_delivery.py
+      - name: Upload delivery
+        uses: actions/upload-artifact@v4
+        with:
+          name: iris-delivery-${{ github.sha }}
+          path: dist/iris-delivery.zip
+          if-no-files-found: error
+          retention-days: 90
