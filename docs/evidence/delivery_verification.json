@@ -1,0 +1,5 @@
+{
+  "artifact_prediction": "Prediction: setosa\nLeaf probability: 100.00% (not calibrated confidence)",
+  "artifact_accuracy": 1.0,
+  "required_files_present": true
+}

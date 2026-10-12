@@ -33,6 +33,8 @@ git pull --ff-only
 
 These are explanatory examples. `docs/evidence/git_commands.txt` records actual
 local commands and output, including commit IDs and publishing results.
+The submission also includes a readable snapshot in
+`docs/evidence/Git_Command_Transcript.md`.
 
 ## Viva questions
 

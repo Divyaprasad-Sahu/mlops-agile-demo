@@ -1,0 +1,14 @@
+{
+  "pr_url": "https://github.com/Divyaprasad-Sahu/mlops-agile-demo/pull/1",
+  "pr_status": "Merged after passing checks",
+  "feature_sha": "68d5dc6b64f6119a8af1dc68ec12c76b3c680c1f",
+  "merge_sha": "90f694c5009514606ec884c1c2e9b056394f50b5",
+  "pr_run_url": "https://github.com/Divyaprasad-Sahu/mlops-agile-demo/actions/runs/38260990034",
+  "main_run_url": "https://github.com/Divyaprasad-Sahu/mlops-agile-demo/actions/runs/38261476545",
+  "pr_tests": "19 passed; delivery skipped on PR",
+  "main_jobs": "Validate and test: success; Train and deliver: success",
+  "artifact_name": "iris-delivery-90f694c5009514606ec884c1c2e9b056394f50b5",
+  "artifact_id": 11752004464,
+  "artifact_verified": "Downloaded and extracted; included model predicts setosa; metrics and source checked",
+  "main_test_count": 19
+}
