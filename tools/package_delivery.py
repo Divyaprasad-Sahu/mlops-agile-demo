@@ -15,9 +15,10 @@ def main():
     target = ROOT / "dist" / "iris-delivery.zip"
     files = required + [ROOT / name for name in
                         ("README.md", "requirements.txt", "requirements-dev.txt", "pytest.ini", ".gitignore", "models/README.md")]
-    for folder in ("src", "data", "tests", "docs", "tools", ".github"):
+    for folder in ("src", "data", "tests", "docs", "tools", ".github", ".vscode"):
         files.extend(p for p in (ROOT / folder).rglob("*")
-                     if p.is_file() and "__pycache__" not in p.parts
+                     if p.is_file() and "__pycache__" not in p.parts and not p.name.startswith("~$")
+                     and p.name not in ("Experiment_1_Agile_and_Scrum_Report.docx", "Experiment_1_Agile_and_Scrum_Report_Revised.docx")
                      and p.suffix in (".py", ".ps1", ".md", ".csv", ".json", ".docx", ".yml", ".xml", ".txt"))
     with ZipFile(target, "w", ZIP_DEFLATED) as archive:
         for file in sorted(set(files)):

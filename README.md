@@ -6,6 +6,11 @@ pytest, and delivers the accepted increment through GitHub Actions.
 
 ## Quick start
 
+For the required local editor workflow, open this folder in **VS Code** and
+follow [Perform Experiment 1 in VS Code](docs/VS_Code_Demonstration.md).
+Included tasks run training, prediction, automated tests and Git history through
+**Terminal → Run Task**. GitHub provides sharing and automated CI/CD afterward.
+
 Use Python 3.11 or 3.12. From this repository's root:
 
 ```powershell
@@ -59,6 +64,11 @@ MLOps_Agile_Demo/
 ```
 
 ## Scrum and experiment documentation
+
+The current submission report is
+[Experiment 1 lab report](docs/Experiment_1_Agile_and_Scrum_Report_Template.docx),
+formatted to the supplied reference image. Earlier report versions are retained
+in the repository history; the delivery ZIP includes the current report.
 
 - [Product backlog](docs/Product_Backlog.md)
 - [Roles and ceremonies](docs/Scrum_Records.md)
