@@ -63,12 +63,21 @@ def train_model():
     return bundle, metrics
 
 
-def predict_species(bundle, measurements):
+def prediction_details(bundle, measurements):
     values = np.asarray(measurements, dtype=float)
     if values.shape != (4,) or not np.isfinite(values).all() or (values <= 0).any():
         raise ValueError("Supply exactly four finite, positive measurements in centimetres.")
-    class_id = int(bundle["model"].predict(values.reshape(1, 4))[0])
-    return bundle["target_names"][class_id]
+    model = bundle["model"]
+    row = values.reshape(1, 4)
+    probabilities = model.predict_proba(row)[0]
+    position = int(np.argmax(probabilities))
+    class_id = int(model.classes_[position])
+    return {"species": bundle["target_names"][class_id],
+            "leaf_probability": float(probabilities[position])}
+
+
+def predict_species(bundle, measurements):
+    return prediction_details(bundle, measurements)["species"]
 
 
 def save_training_outputs(bundle, metrics, output_dir, data_dir):
@@ -110,7 +119,9 @@ def main(argv=None):
             print(f"Train/test rows: {metrics['train_rows']}/{metrics['test_rows']}")
             print(f"Model and evaluation files: {args.output_dir.resolve()}")
         else:
-            print(f"Prediction: {predict_species(joblib.load(args.model), args.measurements)}")
+            details = prediction_details(joblib.load(args.model), args.measurements)
+            print(f"Prediction: {details['species']}")
+            print(f"Leaf probability: {details['leaf_probability']:.2%} (not calibrated confidence)")
     except (ValueError, FileNotFoundError) as exc:
         parser.exit(1, f"Error: {exc}\n")
     return 0
