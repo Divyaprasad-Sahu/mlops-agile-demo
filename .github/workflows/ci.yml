@@ -11,10 +11,10 @@ permissions:
 jobs:
   test:
     name: Validate and test
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
         with:
           python-version: '3.11'
           cache: pip
@@ -24,7 +24,7 @@ jobs:
         run: python -m pytest -q --junitxml=reports/junit.xml
       - name: Upload test results
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: test-results-${{ github.run_id }}-${{ github.run_attempt }}
           path: reports/junit.xml
@@ -35,10 +35,10 @@ jobs:
     name: Train and deliver
     needs: test
     if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
         with:
           python-version: '3.11'
           cache: pip
@@ -49,7 +49,7 @@ jobs:
       - name: Package tested increment
         run: python tools/package_delivery.py
       - name: Upload delivery
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: iris-delivery-${{ github.sha }}
           path: dist/iris-delivery.zip

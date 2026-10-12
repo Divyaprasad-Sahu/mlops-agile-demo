@@ -74,7 +74,9 @@ Every push and pull request runs the test job under Python 3.11. A successful
 `main` run starts the dependent delivery job. Failed tests prevent model
 delivery. Pull requests test changes without producing delivery artifacts.
 
-Open the successful run under **Actions → Iris CI and delivery**. Download
+The workflow pins Ubuntu 24.04 and uses the official v7 Actions to avoid the
+older Node 20 action runtime deprecation. Open the successful run under
+**Actions → Iris CI and delivery**. Download
 `iris-delivery-<commit SHA>`, then extract the enclosed `iris-delivery.zip`.
 Install `requirements.txt` in a fresh environment and run prediction using the
 included model. Downloadable tested software is the CD mechanism for this lab.
@@ -82,6 +84,9 @@ Artifacts expire after 90 days; rerun the workflow to recreate them.
 
 Load only trusted joblib files. Generated binaries, environments, caches, and
 local test reports are excluded from Git; workflow artifacts deliver them.
+
+Optional report-generation tools use `python-docx` from the authoring runtime;
+they are not needed to train, predict, test or package the classifier.
 
 ## References
 

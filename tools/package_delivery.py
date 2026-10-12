@@ -14,11 +14,11 @@ def main():
     (ROOT / "dist").mkdir(exist_ok=True)
     target = ROOT / "dist" / "iris-delivery.zip"
     files = required + [ROOT / name for name in
-                        ("README.md", "requirements.txt", "requirements-dev.txt", "pytest.ini")]
-    for folder in ("src", "data", "tests", "docs"):
+                        ("README.md", "requirements.txt", "requirements-dev.txt", "pytest.ini", ".gitignore", "models/README.md")]
+    for folder in ("src", "data", "tests", "docs", "tools", ".github"):
         files.extend(p for p in (ROOT / folder).rglob("*")
                      if p.is_file() and "__pycache__" not in p.parts
-                     and p.suffix in (".py", ".md", ".csv", ".json", ".docx"))
+                     and p.suffix in (".py", ".ps1", ".md", ".csv", ".json", ".docx", ".yml", ".xml", ".txt"))
     with ZipFile(target, "w", ZIP_DEFLATED) as archive:
         for file in sorted(set(files)):
             archive.write(file, file.relative_to(ROOT).as_posix())
